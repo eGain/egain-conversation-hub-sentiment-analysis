@@ -36,11 +36,12 @@ Create eGain User with Chat Advisor role and platform license
 client app etc TBD for R21   Screenshots 
 
 **Installation**
-Clone the repository
-Modify files if needed etc. 
-Login to AWS Cloud
-Upload the stack [ With Screenshots]
-Modify the parameter store etc [ With Screenshots]
+
+1. Clone the repository
+2. Modify files if needed etc. 
+3. Login to AWS Cloud
+4. Upload the stack [ With Screenshots]
+5. Modify the parameter store etc [ With Screenshots]
 
 **Additional Information**
 This Integration leverage the below services from AWS
