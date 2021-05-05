@@ -24,7 +24,8 @@ Additional Information, if any.
 
 **Architecture Diagram**
 
-egps-chat-sentiment-analysis/Sentiment Analysis diagram.png
+![Sentiment Analysis diagram](https://user-images.githubusercontent.com/24971813/117198523-c39fd200-ae06-11eb-93bc-205a184a3093.png)
+
 
 1. Cloudwatch event rule is configured to execute the lambda every x hours
 2. eGain chat transcripts of closed chats are fetched at regular interval using eGain messaging hub provided interaction APIs. 
