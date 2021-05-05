@@ -5,7 +5,7 @@ App to fetch chat with customers from eGain and determine customer's sentiment s
 
 Traditionally most organizations were leveraging survey as a primary tool to measure the customer satisfaction. With the improvement in AI technologies in last few years, getting insights on how your customers are talking to you will paint a better picture. Conversations transcripts are one of the source for measuring the customer satisfaction. This repository contains an example application to determine the sentiments of a conversation in eGain messaging hub. Using sentiment analysis, this information can help paint a more accurate picture of the health of customer relationships with your service agents. This example enables developers to pull the eGain conversation data and sent to AWS comprehend. Developers can use other conversational analytics tool such as Callminer, Clarabridge , Microsoft text analytics as well. You can also use this pattern for getting more insights such as product information from the conversation. 
 
-<<screenshot of the outcome>>
+![setimentAnalyserOutput](https://user-images.githubusercontent.com/24971813/117198632-e29e6400-ae06-11eb-983d-d5ec4d1d993b.PNG)
 
 **Pre-requsiites**
 1. Git installed on your computer
@@ -20,8 +20,7 @@ Traditionally most organizations were leveraging survey as a primary tool to mea
 10. You need to run the 'aws configure' to configure the aws profile for deployment
 
 **Architecture Diagram**
-
-
+![Sentiment Analysis diagram](https://user-images.githubusercontent.com/24971813/117199089-68221400-ae07-11eb-99e9-1db607047eab.png)
 
 
 **Flow** 
