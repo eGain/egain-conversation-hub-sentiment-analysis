@@ -1,0 +1,427 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: Stack for Chat transcript ingestion from eGain to Connected Apps(CallMiner)
+Parameters:
+  DeploymentEnvironment:
+    Type: String
+    AllowedPattern: \b(dev|qa|stage|prod)\b
+    Description: The value of deployment environment used in versioning of lambda function
+    Default: dev
+  CodeBucketName:
+    Type: String
+    Description: The S3 Bucket Name for Code
+  LambdaMasterRole:
+    Type: String
+    AllowedPattern: arn:(aws[a-zA-Z-]*)?:iam::\d{12}:role/?[a-zA -Z_0-9+=,.@\-_/]+
+    Description: The ARN of role for all Lambda Functions.
+  eGainApiHost:
+    Type: String
+    Description: 'Host/URL of the eGain Application to access the API'
+  eGainApiUserName:
+    Type: String
+    Description: 'User Name(Agent) to access the eGain API'
+  eGainApiPassword:
+    Type: String
+    Description: 'Password for User account to access the eGain API'
+    NoEcho: true
+    Default: xxx
+  eGainApiProxyIp:
+    Type: String
+    Description: 'Name/IP address of the Proxy'
+    Default: awirproxy.egain.cloud
+  eGainApiProxyPort:
+    Type: String
+    Description: 'Port for Proxy'
+    Default: 800
+  eGainApiProxyUserName:
+    Type: String
+    Description: 'UserName for accessing eGain Proxy'
+    Default: psuser
+  eGainApiProxyPassword:
+    Type: String
+    Description: 'Password for accessing eGain Proxy'
+    NoEcho: true
+    Default: xxx
+  BatchProcessingDataRetentionDays:
+    Type: String
+    Description: 'Retention period in days to hold the batch data.'
+    Default: 30
+  LoggerLevel:
+    Type: String
+    Description: Used to set the logger level in survey module for cloudwatch logs.
+    Default: error
+  # VpcId:
+  #   Type: AWS::EC2::VPC::Id
+  #   Default: "vpc-xxxxxxxxxxxxxxxxx"
+  #   Description: "Select the VPC ID for the VPC endpoint."
+  SubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Default: 'subnet-123a351e, subnet-456b351e'
+    Description: "Select the subnets to associate with the VPC endpoint."
+  SecurityGroupId:
+    Type: AWS::EC2::SecurityGroup::Id
+    Default: 'sg-xxxxxxxxxxxxxxxxx,sg-xxxxxxxxxxxxxxxxx'
+    Description: Select security group to associate with the VPC endpoint.
+  DisableProxy:
+    Type: String
+    Description: Boolean to indicate if proxy is required for API and SMTP.
+    Default: true
+
+Resources:
+  EgpsChatSentimentAnalysisDependenciesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Sub 'egps-${DeploymentEnvironment}-chat-sentiment-analysis-dependencies'
+      Description: Dependencies layer
+      ContentUri: ../services/layers/dependencies
+      CompatibleRuntimes:
+        - nodejs14.x
+      RetentionPolicy: Retain
+  EgpsChatSentimentAnalysisCommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Sub 'egps-${DeploymentEnvironment}-chat-sentiment-analysis-common'
+      Description: Common Layer
+      ContentUri: ../services/layers/common
+      CompatibleRuntimes:
+        - nodejs14.x
+      RetentionPolicy: Retain
+
+  EgpsChatSentimentAnalysisLambda:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: ../services/src/chat-sentiment-analysis/
+      Description: To read the chat transcript from eGain using Interaction API and call AWS Comprehend for sentiment analysis
+      FunctionName: !Sub 'egps-${DeploymentEnvironment}-chat-sentiment-analysis'
+      Handler: index.handler      
+      Runtime: nodejs14.x
+      MemorySize: 512
+      Timeout: 900
+      Role: !Ref LambdaMasterRole
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref SecurityGroupId
+        SubnetIds:
+          Ref: SubnetIds
+      Layers:
+        - Ref: EgpsChatSentimentAnalysisDependenciesLayer
+        - Ref: EgpsChatSentimentAnalysisCommonLayer
+      Environment:
+        Variables:
+           Environment: !Ref DeploymentEnvironment
+           BatchProcessingDataRetentionDays: !Ref BatchProcessingDataRetentionDays
+           Customer: Connected Apps
+           Customization: Internal 
+           LogLevel: !Ref LoggerLevel
+           LogMasking: true
+           AppName: chat-sentiment-analysis
+           CodeBucketName: !Ref CodeBucketName
+           ProxyAuth: true
+           DisableProxy: !Ref DisableProxy
+      Tags: 
+        Customer: Connected Apps
+        Customization: Internal
+
+  EgpsChatSentimentAnalysisScheduled: 
+    Type: AWS::Events::Rule
+    Properties: 
+        Name: !Sub 'egps-${DeploymentEnvironment}-chat-sentiment-analysis-schedule'
+        Description: "Chat sentiment analysis Scheduled Rule"
+        ScheduleExpression: "rate(3 hours)"
+        State: "ENABLED"
+        Targets: 
+          - 
+            Arn: !GetAtt EgpsChatSentimentAnalysisLambda.Arn
+            Id: ScheduleV1 
+            Input: '{"bowwave-process":false}'
+  EgpsChatSentimentAnalysisBowwaveScheduled: 
+    Type: AWS::Events::Rule
+    Properties: 
+        Name: !Sub 'egps-${DeploymentEnvironment}-chat-sentiment-analysis-bowwave-schedule'
+        Description: "Chat sentiment analysis Scheduled Rule for Process BowWave data"
+        ScheduleExpression: "rate(1 day)"
+        State: "ENABLED"
+        Targets: 
+          - 
+            Arn: !GetAtt EgpsChatSentimentAnalysisLambda.Arn
+            Id: ScheduleV2   
+            Input: '{"bowwave-process":true}'
+  EgpsChatSentimentAnalysisPermToInvokeLambda: 
+    Type: AWS::Lambda::Permission
+    Properties:
+        FunctionName: !Ref EgpsChatSentimentAnalysisLambda
+        Action: "lambda:InvokeFunction"
+        Principal: "events.amazonaws.com"
+        SourceArn: !GetAtt EgpsChatSentimentAnalysisScheduled.Arn
+  EgpsChatSentimentAnalysisBowwavePermToInvokeLambda: 
+    Type: AWS::Lambda::Permission
+    Properties:
+        FunctionName: !Ref EgpsChatSentimentAnalysisLambda
+        Action: "lambda:InvokeFunction"
+        Principal: "events.amazonaws.com"
+        SourceArn: !GetAtt EgpsChatSentimentAnalysisBowwaveScheduled.Arn
+        
+  EgpsChatSentimentAnalysisSecretManager:
+    Type: 'AWS::SecretsManager::Secret'
+    Properties: 
+        Name: !Sub 'egps-${DeploymentEnvironment}-chat-sentiment-analysis-secrets'
+        Description: Secrets to store the eGain API, CallMiner API, SMTP and Proxy Credential.
+        SecretString: !Sub '{ "egain-api-user-credential": "{ \t\"userName\": \"${eGainApiUserName}\", \t\"password\": \"${eGainApiPassword}\" }","egain-api-proxy-credential":	"{ \t\"username\": \"${eGainApiProxyUserName}\", \t\"password\": \"${eGainApiProxyPassword}\" }"}'
+        Tags: 
+        - 
+           Key: Customer
+           Value: Connected Apps 
+        - 
+           Key: Customization
+           Value: Internal
+
+  EgpsChatSentimentAnalysisParameter1:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub '/egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/api-timeout-retry-attempts'
+      Type: String
+      Value: '3'
+      Description: No of max retry attempt in case of gateway/api timeout.
+      AllowedPattern: "^[0-9]+$"
+      Tags: 
+        Customer: Connected Apps
+        Customization: Internal
+  EgpsChatSentimentAnalysisParameter2:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub '/egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/api-timeout-seconds'
+      Type: String
+      Value: '30'
+      Description: API request timeout duration in seconds.
+      AllowedPattern: "^[0-9]+$"
+      Tags: 
+        Customer: Connected Apps
+        Customization: Internal
+  EgpsChatSentimentAnalysisParameter3:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub '/egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/max-allowed-failure'
+      Type: String
+      Value: '3'
+      Description: Max continuous failures to terminate processing.
+      AllowedPattern: "^[0-9]+$"
+      Tags: 
+        Customer: Connected Apps
+        Customization: Internal
+  EgpsChatSentimentAnalysisParameter4:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub '/egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/egain-api-page-size'
+      Type: String
+      Value: '50'
+      Description: No of data to read per page.
+      AllowedPattern: "^[0-9]+$"
+      Tags: 
+        Customer: Connected Apps
+        Customization: Internal
+  EgpsChatSentimentAnalysisParameter6:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub '/egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/egain-api-host'
+      Type: String
+      Value: !Ref eGainApiHost
+      Description: URL for Accessing eGain API.
+      Tags: 
+        Customer: Connected Apps
+        Customization: Internal
+  EgpsChatSentimentAnalysisParameter7:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub '/egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/halt-data-process-flag'
+      Type: String
+      Value: 'false'
+      Description: Flag to stop the processing in continue failure.
+      AllowedPattern: "^[a-zA-Z]+$"  
+      Tags: 
+        Customer: Connected Apps
+        Customization: Internal
+  EgpsChatSentimentAnalysisParameter14:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub '/egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/egain-api-proxy-ip'
+      Type: String
+      Value: !Ref eGainApiProxyIp 
+      Description: IP address of Proxy.
+      Tags: 
+        Customer: Connected Apps
+        Customization: Internal
+  EgpsChatSentimentAnalysisParameter15:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub '/egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/egain-api-proxy-port'
+      Type: String
+      Value: !Ref eGainApiProxyPort
+      Description: Port for Proxy.
+      AllowedPattern: "^[0-9]+$"  
+      Tags: 
+        Customer: Connected Apps
+        Customization: Internal
+
+  EgpsChatSentimentAnalysisDynamoTidemarkdettable: 
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+        - 
+          AttributeName: 'TIDEMARK_NAME'
+          AttributeType: 'S'
+      KeySchema: 
+        - 
+          AttributeName: 'TIDEMARK_NAME'
+          KeyType: 'HASH'
+      BillingMode: 'PAY_PER_REQUEST'
+      TableName: !Sub 'egps-${DeploymentEnvironment}-chat-sentiment-analysis-tidemark'
+      Tags: 
+        -   
+          Key: Customer
+          Value: Connected Apps 
+        - 
+          Key: Customization
+          Value: Internal
+  EgpsChatSentimentAnalysisDynamoBatchdettable: 
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+        - 
+          AttributeName: 'BATCH_ID'
+          AttributeType: 'S'
+        - 
+          AttributeName: 'RUN_START_TIME_UTC'
+          AttributeType: 'S'
+      KeySchema: 
+        - 
+          AttributeName: 'BATCH_ID'
+          KeyType: 'HASH'
+        - 
+          AttributeName: 'RUN_START_TIME_UTC'
+          KeyType: 'RANGE'
+      BillingMode: 'PAY_PER_REQUEST'
+      TableName: !Sub 'egps-${DeploymentEnvironment}-chat-sentiment-analysis-batch'
+      TimeToLiveSpecification:
+          AttributeName: EXPIRE_TIME
+          Enabled: true
+      Tags: 
+        -   
+          Key: Customer
+          Value: Connected Apps 
+        - 
+          Key: Customization
+          Value: Internal
+
+  # EgpsChatSentimentAnalysisSubscription:
+  #   Type: AWS::SNS::Subscription
+  #   Properties:
+  #       Endpoint: !Ref NotificationeGainToEmail
+  #       Protocol: email
+  #       TopicArn: !Ref EgpsChatSentimentAnalysisSNSTopic
+  # EgpsChatSentimentAnalysisLambdaInvocAlarm:
+  #   Type: AWS::CloudWatch::Alarm
+  #   Properties:
+  #       AlarmDescription: Alarm for Lambda Error
+  #       AlarmName: !Sub "egps-${DeploymentEnvironment}-callminer-lambda-errors"
+  #       MetricName: Errors
+  #       Namespace: AWS/Lambda
+  #       Period: 21600
+  #       EvaluationPeriods: 1
+  #       Statistic: Sum
+  #       Threshold: 3
+  #       TreatMissingData: notBreaching
+  #       ComparisonOperator: GreaterThanThreshold
+  #       InsufficientDataActions:
+  #           - !Ref EgpsChatSentimentAnalysisSNSTopic
+  EgpsChatSentimentAnalysisDynamodbUpdateLatAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+        AlarmDescription: Alarm for DynamoDB update latency
+        AlarmName: !Sub "egps-${DeploymentEnvironment}-chat-sentiment-analysis-Update-Latency"
+        MetricName: SuccessfulRequestLatency
+        Namespace: AWS/DynamoDB
+        Dimensions:
+        - Name: 'TableName'
+          Value: !Sub 'egps-${DeploymentEnvironment}-chat-sentiment-analysis-tidemark'
+        - Name: 'Operation'
+          Value: UpdateItem
+        Period: 300
+        EvaluationPeriods: 1
+        Statistic: Maximum
+        Threshold: 1000
+        TreatMissingData: notBreaching
+        ComparisonOperator: GreaterThanThreshold
+  EgpsChatSentimentAnalysisDynamodbGetLatAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+        AlarmDescription: Alarm for DynamoDB get latency
+        AlarmName: !Sub "egps-${DeploymentEnvironment}-callminer-Get-Latency"
+        MetricName: SuccessfulRequestLatency
+        Namespace: AWS/DynamoDB
+        Dimensions:
+        - Name: 'TableName'
+          Value: !Sub 'egps-${DeploymentEnvironment}-chat-sentiment-analysis-tidemark'
+        - Name: 'Operation'
+          Value: GetItem
+        Period: 300
+        EvaluationPeriods: 1
+        Statistic: Maximum
+        Threshold: 1000
+        TreatMissingData: notBreaching
+        ComparisonOperator: GreaterThanThreshold
+  EgpsChatSentimentAnalysisDynamodbPutLatAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+        AlarmDescription: Alarm for DynamoDB put latency
+        AlarmName: !Sub "egps-${DeploymentEnvironment}-callminer-Put-Latency"
+        MetricName: SuccessfulRequestLatency
+        Namespace: AWS/DynamoDB
+        Dimensions:
+        - Name: 'TableName'
+          Value: !Sub 'egps-${DeploymentEnvironment}-chat-sentiment-analysis-tidemark'
+        - Name: 'Operation'
+          Value: PutItem
+        Period: 300
+        EvaluationPeriods: 1
+        Statistic: Maximum
+        Threshold: 1000
+        TreatMissingData: notBreaching
+        ComparisonOperator: GreaterThanThreshold
+        # InsufficientDataActions:
+        #     - !Ref EgpsChatSentimentAnalysisSNSTopic  
+  EgpsChatSentimentAnalysisSchFailedInvocAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+        AlarmDescription: Alarm for bowwave schedule failed invocations
+        AlarmName: !Sub "egps-${DeploymentEnvironment}-callminer-schedule-Error"
+        MetricName: FailedInvocations
+        Namespace: AWS/Events
+        Dimensions:
+        - Name: 'RuleName'
+          Value: !Ref EgpsChatSentimentAnalysisScheduled 
+        Period: 21600
+        EvaluationPeriods: 1
+        Statistic: Sum
+        Threshold: 1
+        TreatMissingData: notBreaching
+        ComparisonOperator: GreaterThanThreshold
+        # InsufficientDataActions:
+        #     - !Ref EgpsChatSentimentAnalysisSNSTopic
+  EgpsChatSentimentAnalysisSchBowFailedInvocAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Alarm for schedule failed invocations
+      AlarmName: !Sub "egps-${DeploymentEnvironment}-callminer-bowschedule-Error"
+      MetricName: FailedInvocations
+      Namespace: AWS/Events
+      Dimensions:
+       - Name: 'RuleName'
+         Value: !Ref EgpsChatSentimentAnalysisBowwaveScheduled
+      Period: 86400
+      EvaluationPeriods: 1
+      Statistic: Sum
+      Threshold: 1
+      TreatMissingData: notBreaching
+      ComparisonOperator: GreaterThanThreshold
+      # InsufficientDataActions:
+      #   - !Ref EgpsChatSentimentAnalysisSNSTopic

@@ -1,0 +1,32 @@
+
+  <html>
+  <body style="text-align: center; font-family: Comic Sans MS, Comic Sans, cursive">
+    <h3>Customer name: Beckham David</h3>
+    <canvas id="sentiment-chart" width="800" height="550"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.2.1/dist/chart.min.js"></script>
+    <script>
+      new Chart(document.getElementById('sentiment-chart'), {
+        type: 'pie',
+        data: {
+          labels: ['Positive', 'Negative', 'Neutral', 'Mixed'],
+          datasets: [
+            {
+              label: 'Sentiment Score (percentage)',
+              backgroundColor: ['#22F431', '#EA493A', '#24E7C3', '#CDEB19'],
+              data: [50.31715966761112, 7.510257879857818, 42.15053638545214, 0.02204722841270268],
+            },
+          ],
+        },
+        options: {
+          //legend: { display: false },
+          title: {
+            display: true,
+            text: 'Customer Sentiment Score(percentage) based on chat',
+          },
+          responsive: false,
+        },
+      });
+    </script>
+  </body>
+</html>
