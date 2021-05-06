@@ -1,9 +1,12 @@
 
   <html>
-  <body style="text-align: center; font-family: Comic Sans MS, Comic Sans, cursive">
-    <h3>Customer name: Kean Roy</h3>
-    <canvas id="sentiment-chart" width="800" height="550"></canvas>
-
+  <body style="font-family: Arial, Helvetica, sans-serif">
+    <h3 style="text-align: center">Customer name: Beckham David</h3>
+    <canvas id="sentiment-chart" width="800" height="500"  style="margin-left: 15%"></canvas>
+    <h5 style="text-align: left">
+      * Based on customer interactions in last 7 days
+    </h5>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.2.1/dist/chart.min.js"></script>
     <script>
       new Chart(document.getElementById('sentiment-chart'), {
@@ -13,8 +16,8 @@
           datasets: [
             {
               label: 'Sentiment Score (percentage)',
-              backgroundColor: ['#22F431', '#EA493A', '#24E7C3', '#CDEB19'],
-              data: [0.006743731319147628, 99.93773400783539, 0.05231237300904468, 0.0032054898838396184],
+              backgroundColor: ['#2596be', '#EA493A', '#d9d9d9', '#CDEB19'],
+              data: [50.31715966761112, 7.510257879857818, 42.15053638545214, 0.02204722841270268],
             },
           ],
         },
