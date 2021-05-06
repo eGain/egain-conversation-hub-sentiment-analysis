@@ -20,10 +20,13 @@ const createHTML = async (customerName, sentimentObj) => {
 
   let content = `
   <html>
-  <body style="text-align: center; font-family: Comic Sans MS, Comic Sans, cursive">
-    <h3>Customer name: $customer_name$</h3>
-    <canvas id="sentiment-chart" width="800" height="550"></canvas>
-
+  <body style="font-family: Arial, Helvetica, sans-serif">
+    <h3 style="text-align: center">Customer name: $customer_name$</h3>
+    <canvas id="sentiment-chart" width="800" height="500"  style="margin-left: 15%"></canvas>
+    <h5 style="text-align: left">
+      * Based on customer interactions in last 7 days
+    </h5>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.2.1/dist/chart.min.js"></script>
     <script>
       new Chart(document.getElementById('sentiment-chart'), {
@@ -33,7 +36,7 @@ const createHTML = async (customerName, sentimentObj) => {
           datasets: [
             {
               label: 'Sentiment Score (percentage)',
-              backgroundColor: ['#22F431', '#EA493A', '#24E7C3', '#CDEB19'],
+              backgroundColor: ['#2596be', '#EA493A', '#d9d9d9', '#CDEB19'],
               data: [$positive_score$, $negative_score$, $neutral_score$, $mixed_score$],
             },
           ],
@@ -44,7 +47,7 @@ const createHTML = async (customerName, sentimentObj) => {
             display: true,
             text: 'Customer Sentiment Score(percentage) based on chat',
           },
-          //   responsive: false,
+          responsive: false,
         },
       });
     </script>

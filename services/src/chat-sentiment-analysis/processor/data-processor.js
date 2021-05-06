@@ -47,7 +47,6 @@ let failedToPostActivities = [];
 let isProcessingTerminated = false;
 
 const customerTranscriptMap = new Map(); // <customerName,[transcripts]>
-const responseMap = new Map(); // <customerName,[comprehendResponse]>
 async function getParsedTranscriptContent(activity) {
   logger.log('info', `parsing activity transcript for activity${activity.id}`);
 
@@ -493,8 +492,6 @@ async function searchAndProcessActivities(lastModifiedDateFilter) {
 
 const processSentimentAnalysis = async () => {
   logger.log('debug', 'inside processSentimentAnalysis method');
-  console.log('transcript map ');
-  console.log(util.inspect(customerTranscriptMap, { showHidden: false, depth: null }));
 
   const customerList = Array.from(customerTranscriptMap.keys());
   for (let i = 0; i < customerList.length; i += 1) {
@@ -506,7 +503,6 @@ const processSentimentAnalysis = async () => {
       transcriptArrStr.push(transcript.join());
     });
 
-    console.log('getting sentiment for ', transcriptArrStr);
     const params = {
       LanguageCode: 'en',
       TextList: transcriptArrStr,
@@ -517,7 +513,6 @@ const processSentimentAnalysis = async () => {
       logger.log('error', 'error while getting sentiment analysis ', saRes.ErrorList);
     }
     if (saRes.ResultList && saRes.ResultList.length > 0) {
-      responseMap.set(customer, saRes.ResultList); // remove
       let positiveScore = 0;
       let negativeScore = 0;
       let neutralScore = 0;
@@ -542,8 +537,6 @@ const processSentimentAnalysis = async () => {
       await createHTML(customer, averageScore);
     }
   }
-  console.log('final response ');
-  console.log(util.inspect(responseMap, { showHidden: false, depth: null }));
 };
 /**
  * This method takes event as input and processes chat transcripts
@@ -694,7 +687,7 @@ async function processDataIngestion(event, context) {
       // if (egGlobalCache.get(cacheKeys.NOTIFICATION_RULE).indexOf('success') > -1) {
       // send success email
       // await sendSuccessNotification();
-      console.log('success');
+      logger.log('info', 'job executed successfully, exiting');
       // }
       await dbOperations.updateRunStatusToPostTideMark(true);
     }
