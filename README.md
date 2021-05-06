@@ -14,6 +14,11 @@ Traditionally most organizations were leveraging survey as a primary tool to mea
 6. Tidemark and batch status is updated
 7. Transcripts along with sentiments are fed to HTML and written to S3 bucket.
 
+**Note**
+1. Chats with anonymous customers will not be processed.
+2. Only chats in English will be processed.
+3. The generated HTML will be stored in ${S3_bucket}/chat/sentiment-analysis/output
+
 **Pre-requsiites**
 1. Git client, can be downloaded from https://git-scm.com/downloads
 2. eGain Cloud advisor credentials availability 
@@ -25,9 +30,7 @@ Traditionally most organizations were leveraging survey as a primary tool to mea
 8. SAM CLI, please refer https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-windows.html to install and configure SAM CLI
 9. You need to run the 'aws configure' to configure the aws profile for deployment
 
-
 **Installation**
-
 1. Clone this repository
 2. Navigate to deployment folder and edit the egps-chat-sentiment-analysis-config.properties file with appropriate parameters. Proxy details should be used if required   to access eGain. Please refer below table
   
@@ -52,6 +55,14 @@ Traditionally most organizations were leveraging survey as a primary tool to mea
 3. On command prompt, execute egps-chat-sentiment-analysis-deploy.bat by pressing enter, it will start deployment and progress can be seen on the command prompt.
 4. Upon successful installation, Cloudwatch event will be created.
 
+**Post Installation**
+1. In the first run job will pick activities from date entered in DATA_START_POINT in config file. The date will be modified for each run to current date and        activities will be picked after the updated date. To modify the start date, navigate to egps-${DeploymentEnvironment}-chat-sentiment-analysis-tidemark table in DynamoDB and update the ACTIVITY_VALUE_FROM value.
+2. To modify eGain host URL or proxy details, navigate to Parameter Store in AWS Systems Manager and edit below properties:
+  * /egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/egain-api-host
+  * /egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/egain-api-proxy-ip
+  * /egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/egain-api-proxy-port
+3. To modify eGain login credentials, navigate to AWS Secrets manager and edit below properties:
+  * egps-${DeploymentEnvironment}-chat-sentiment-analysis-secrets => egain-api-user-credential
 
 **Getting Started**
 Configure eGain  - TBD
