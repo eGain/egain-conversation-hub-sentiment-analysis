@@ -52,7 +52,7 @@ Traditionally most organizations were leveraging survey as a primary tool to mea
   | SECURITY_GROUP_ID | ID of security groups |
   | SUBNET_IDS | Comma separated subnet ids |
   
-3. On command prompt, execute egps-chat-sentiment-analysis-deploy.bat by pressing enter, it will start deployment and progress can be seen on the command prompt.
+3. On command prompt, execute egps-chat-sentiment-analysis-deploy.bat file, it will start deployment and progress can be seen on the command prompt.
 4. Upon successful installation, Cloudwatch event will be created.
 
 **Post Installation**
