@@ -24,7 +24,7 @@ Traditionally most organizations were leveraging survey as a primary tool to mea
 2. eGain Cloud advisor credentials availability 
 3. AWS cloud credentials with AWS Comprehend, Lambda and all mentioned below services from "Additional Information" enabled
 4. AWS account with access to eGain URL
-5. Role with permissions defined in "sentimentAnalyserrole.json" created before the deployment and used while deploying the application
+5. Role with permissions defined in "deployment/sentimentAnalyserrole.json" created before the deployment and used while deploying the application
 6. Simple email service configured for AWS account, if required
 7. AWS CLI, please refer https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html to install and configure AWS CLI
 8. SAM CLI, please refer https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-windows.html to install and configure SAM CLI
