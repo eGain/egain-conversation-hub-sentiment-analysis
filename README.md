@@ -21,23 +21,23 @@ Please check architecture diagram present in ""Docs\Sentiment Analysis Diagram.p
 3. The generated HTML will be stored in ${S3_bucket}/chat/sentiment-analysis/output
 
 **Getting Started**
-1. Configure eGain - TBD
-1.1. Create eGain User with Platform license and Advisor role
+1. Configure eGain
+    1.1. Use eGain instance where eGain chat product is configured and create eGain User with Platform license and Advisor role.
 
 **Pre-requsiites**
 1. Git client, can be downloaded from https://git-scm.com/downloads
 2. eGain Cloud advisor credentials availability is assumed.
 3. AWS cloud credentials with AWS Comprehend, Lambda and all mentioned below services from "Additional Information" are enabled.
 4. AWS account with access to eGain URL from where chat transcripts are fetched.
-5. Role with permissions defined in "deployment/sentimentAnalyserrole.json" created before the deployment and used while deploying the application
-6. Simple email service configured for AWS account, if required
+5. Role with permissions defined in "deployment/sentimentAnalyserrole.json" is created before the deployment and used while deploying the application
+6. Simple email service configured for AWS account
 7. AWS CLI, please refer https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html to install and configure AWS CLI
 8. SAM CLI, please refer https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-windows.html to install and configure SAM CLI
 9. You need to run the 'aws configure' to configure the aws profile for deployment
 
 **Installation**
 1. Clone this repository
-2. Navigate to deployment folder and edit the egps-chat-sentiment-analysis-config.properties file with appropriate parameters. Proxy details should be used if required   to access eGain. Please refer below table
+2. Navigate to deployment folder and edit the egps-chat-sentiment-analysis-config.properties file with appropriate parameters. Proxy details should be used if required to access eGain. Please refer below table
   
   | Property        | Description |
   | ------------- |:-------------:|
