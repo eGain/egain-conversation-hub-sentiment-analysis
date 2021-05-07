@@ -2,28 +2,33 @@
 
 Traditionally most organizations were leveraging survey as a primary tool to measure the customer satisfaction. With the improvement in AI technologies in last few years, getting insights on how your customers are talking to you will paint a better picture. Conversations transcripts are one of the source for measuring the customer satisfaction. This repository contains an example application to determine the sentiments of a conversation in eGain messaging hub. Using sentiment analysis, this information can help paint a more accurate picture of the health of customer relationships with your service agents. This example enables developers to pull the eGain conversation data and sent to AWS comprehend. Developers can use other conversational analytics tool such as Callminer, Clarabridge , Microsoft text analytics as well. You can also use this pattern for getting more insights such as product information from the conversation. 
 
-![setimentAnalyserOutput](.github/images/sampleCustomerOutput.PNG)
+Please check architecture diagram present in ""Docs\Sentiment Analysis Diagram.png"
 
 **Flow** 
+
 1. Cloudwatch event rule is configured to execute the lambda every x hours
 2. eGain chat transcripts of closed chats are fetched at regular interval using eGain messaging hub provided interaction APIs. 
 3.1 Tidemark maintained to define start and end date of batch
 3.2. Chat transcripts are processed to separate agent and customer messages
-4. Chat transcripts are forwarded to AWS comprehend sentiment analyzer
-5. Sentiment details of the chat transcript are returned from the AWS Comprehend service
+4. Customer messages from chat transcripts are forwarded to AWS comprehend sentiment analyzer service
+5. Sentiment details of the messages are returned from the AWS Comprehend service
 6. Tidemark and batch status is updated
-7. Transcripts along with sentiments are fed to HTML and written to S3 bucket.
+7. Sentiments analysis data per customer for that batch is stored in HTML Pie Chat format to S3 bucket.
 
 **Note**
 1. Chats with anonymous customers will not be processed.
 2. Only chats in English will be processed.
 3. The generated HTML will be stored in ${S3_bucket}/chat/sentiment-analysis/output
 
+**Getting Started**
+1. Configure eGain - TBD
+1.1. Create eGain User with Platform license and Advisor role
+
 **Pre-requsiites**
 1. Git client, can be downloaded from https://git-scm.com/downloads
-2. eGain Cloud advisor credentials availability 
-3. AWS cloud credentials with AWS Comprehend, Lambda and all mentioned below services from "Additional Information" enabled
-4. AWS account with access to eGain URL
+2. eGain Cloud advisor credentials availability is assumed.
+3. AWS cloud credentials with AWS Comprehend, Lambda and all mentioned below services from "Additional Information" are enabled.
+4. AWS account with access to eGain URL from where chat transcripts are fetched.
 5. Role with permissions defined in "deployment/sentimentAnalyserrole.json" created before the deployment and used while deploying the application
 6. Simple email service configured for AWS account, if required
 7. AWS CLI, please refer https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html to install and configure AWS CLI
@@ -48,7 +53,7 @@ Traditionally most organizations were leveraging survey as a primary tool to mea
   | EGAIN_API_PROXY_PORT | Port number of proxy to connect to eGain|
   | DISABLE_PROXY | Boolean to specify if proxy should be enabled |
   | EGAIN_API_PROXY_USERNAME | Username of proxy to connect to eGain |
-  | VPC_ID | ID of AWS VPC |
+  | VPC_ID | ID of AWS VPC - used to configure VPC for Lambda|
   | SECURITY_GROUP_ID | ID of security groups |
   | SUBNET_IDS | Comma separated subnet ids |
   
@@ -64,13 +69,10 @@ Traditionally most organizations were leveraging survey as a primary tool to mea
 3. To modify eGain login credentials, navigate to AWS Secrets manager and edit below properties:
   * egps-${DeploymentEnvironment}-chat-sentiment-analysis-secrets => egain-api-user-credential
 
-**Getting Started**
-Configure eGain  - TBD
-Create eGain User with Chat Advisor role and platform license
-client app etc TBD for R21   Screenshots 
+
 
 **Additional Information**
-This Integration leverage the below services from AWS
+This Integration leverages the below services from AWS
 1. AWS Lambda - Processed chat transcripts and comprehend call for sentiment analysis
 2. Amazon Cloud Watch  - Triggers lambda at regular interval
 3. Amazon Secrets Manager - Stores required sensitive information 
