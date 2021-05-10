@@ -15,6 +15,9 @@ Please check architecture diagram present in "docs\Sentiment Analysis Diagram.pn
 6. Tidemark and batch status is updated
 7. Sentiments analysis data per customer for that batch is stored in HTML Pie Chat format to S3 bucket.
 
+Sample Output
+![Sample Output](.github/images/sampleCustomerOutput.PNG)
+
 **Note**
 1. Chats with anonymous customers will not be processed.
 2. Only chats in English will be processed.
