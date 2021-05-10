@@ -45,6 +45,7 @@ Please check architecture diagram present in "docs\Sentiment Analysis Diagram.pn
   | DEPLOYMENT_ENVIRONMENT | Environment for which app is being deployed |
   | LOGGER_LEVEL | Logger level to print cloudwatch logs |
   | DATA_START_POINT | Starting point to read the data from time period |
+  | ANALYSIS_RUN_FREQUENCY | Frequency for event to be executed, value needs to be entered along with unit i.e 5 minutes, 1 hour, 3 hours, 1 day, 7 days, etc|
   | EGAIN_API_USERNAME | eGain username for user with all required permissions |
   | EGAIN_API_PASSWORD | eGain password for user with all required permissions |
   | EGAIN_API_PROXY_IP | Proxy IP address to connect to eGain|
