@@ -4,10 +4,10 @@
   "description": "Layer for external dependencies",
   "dependencies": {
     "axios": "^0.21.1",
-    "node-cache": "^5.1.2",
     "jsdom": "^16.4.0",
-    "ps-chronicle": "0.1.0",
-    "json-masker": "^0.6.1"
+    "json-masker": "^0.6.1",
+    "node-cache": "^5.1.2",
+    "ps-chronicle": "0.0.9"
   },
   "devDependencies": {},
   "scripts": {

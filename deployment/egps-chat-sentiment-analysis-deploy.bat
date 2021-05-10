@@ -25,6 +25,7 @@ sam deploy --debug --capabilities CAPABILITY_IAM^
     --stack-name %STACK_NAME%^
     --parameter-overrides^
     DeploymentEnvironment=%DEPLOYMENT_ENVIRONMENT%^
+	"AnalysisEventFrequency='%ANALYSIS_RUN_FREQUENCY%'"^
     LambdaMasterRole=%LAMBDA_MASTER_ROLE%^
 	CodeBucketName=%CODE_DEPLOY_BUCKET%^
 	eGainApiHost=%EGAIN_API_HOST%^

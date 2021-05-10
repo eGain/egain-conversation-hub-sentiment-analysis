@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
-Description: Stack for Chat transcript ingestion from eGain to Connected Apps(CallMiner)
+Description: Stack for Sentiment Analysis of chat transcripts
 Parameters:
   DeploymentEnvironment:
     Type: String
@@ -66,6 +66,9 @@ Parameters:
     Type: String
     Description: Boolean to indicate if proxy is required for API and SMTP.
     Default: true
+  AnalysisEventFrequency:
+    Type: String
+    Description: The frequency for event to be executed  
 
 Resources:
   EgpsChatSentimentAnalysisDependenciesLayer:
@@ -127,7 +130,7 @@ Resources:
     Properties: 
         Name: !Sub 'egps-${DeploymentEnvironment}-chat-sentiment-analysis-schedule'
         Description: "Chat sentiment analysis Scheduled Rule"
-        ScheduleExpression: "rate(3 hours)"
+        ScheduleExpression: !Sub "rate(${AnalysisEventFrequency})"
         State: "ENABLED"
         Targets: 
           - 
@@ -165,7 +168,7 @@ Resources:
     Type: 'AWS::SecretsManager::Secret'
     Properties: 
         Name: !Sub 'egps-${DeploymentEnvironment}-chat-sentiment-analysis-secrets'
-        Description: Secrets to store the eGain API, CallMiner API, SMTP and Proxy Credential.
+        Description: Secrets to store the eGain API Proxy Credential.
         SecretString: !Sub '{ "egain-api-user-credential": "{ \t\"userName\": \"${eGainApiUserName}\", \t\"password\": \"${eGainApiPassword}\" }","egain-api-proxy-credential":	"{ \t\"username\": \"${eGainApiProxyUserName}\", \t\"password\": \"${eGainApiProxyPassword}\" }"}'
         Tags: 
         - 
@@ -355,7 +358,7 @@ Resources:
     Type: AWS::CloudWatch::Alarm
     Properties:
         AlarmDescription: Alarm for DynamoDB get latency
-        AlarmName: !Sub "egps-${DeploymentEnvironment}-callminer-Get-Latency"
+        AlarmName: !Sub "egps-${DeploymentEnvironment}-chat-sentiment-analysis-Get-Latency"
         MetricName: SuccessfulRequestLatency
         Namespace: AWS/DynamoDB
         Dimensions:
@@ -373,7 +376,7 @@ Resources:
     Type: AWS::CloudWatch::Alarm
     Properties:
         AlarmDescription: Alarm for DynamoDB put latency
-        AlarmName: !Sub "egps-${DeploymentEnvironment}-callminer-Put-Latency"
+        AlarmName: !Sub "egps-${DeploymentEnvironment}-chat-sentiment-analysis-Put-Latency"
         MetricName: SuccessfulRequestLatency
         Namespace: AWS/DynamoDB
         Dimensions:
@@ -393,7 +396,7 @@ Resources:
     Type: AWS::CloudWatch::Alarm
     Properties:
         AlarmDescription: Alarm for bowwave schedule failed invocations
-        AlarmName: !Sub "egps-${DeploymentEnvironment}-callminer-schedule-Error"
+        AlarmName: !Sub "egps-${DeploymentEnvironment}-chat-sentiment-analysis-schedule-Error"
         MetricName: FailedInvocations
         Namespace: AWS/Events
         Dimensions:
@@ -411,7 +414,7 @@ Resources:
     Type: AWS::CloudWatch::Alarm
     Properties:
       AlarmDescription: Alarm for schedule failed invocations
-      AlarmName: !Sub "egps-${DeploymentEnvironment}-callminer-bowschedule-Error"
+      AlarmName: !Sub "egps-${DeploymentEnvironment}-chat-sentiment-analysis-bowschedule-Error"
       MetricName: FailedInvocations
       Namespace: AWS/Events
       Dimensions:

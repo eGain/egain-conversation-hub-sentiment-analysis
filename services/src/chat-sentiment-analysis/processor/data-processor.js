@@ -687,7 +687,8 @@ async function processDataIngestion(event, context) {
       // if (egGlobalCache.get(cacheKeys.NOTIFICATION_RULE).indexOf('success') > -1) {
       // send success email
       // await sendSuccessNotification();
-      logger.log('info', 'job executed successfully, exiting');
+      logger.log('info', `Data processed for ${customerTranscriptMap.size} customers, exiting`);
+      customerTranscriptMap.clear();
       // }
       await dbOperations.updateRunStatusToPostTideMark(true);
     }
