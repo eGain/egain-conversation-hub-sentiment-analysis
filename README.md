@@ -7,7 +7,7 @@ Please check architecture diagram present in "docs\Sentiment Analysis Diagram.pn
 **Flow** 
 
 1. Cloudwatch event rule is configured to execute the lambda every x hours
-2. eGain chat transcripts of closed chats are fetched at regular interval using eGain messaging hub provided interaction APIs. 
+2. eGain chat transcripts of closed chats are fetched at regular interval using eGain messaging hub provided interaction APIs.
 3.1 Tidemark maintained to define start and end date of batch
 3.2. Chat transcripts are processed to separate agent and customer messages
 4. Customer messages from chat transcripts are forwarded to AWS comprehend sentiment analyzer service
@@ -20,7 +20,7 @@ Sample Output
 
 **Note**
 1. Chats with anonymous customers will not be processed.
-2. Only chats in English will be processed.
+2. In this sample, only chats in English will be processed .
 3. The generated HTML will be stored in ${S3_bucket}/chat/sentiment-analysis/output
 
 **Getting Started**
@@ -32,7 +32,7 @@ Sample Output
 2. eGain Cloud availability with valid advisor credentials
 3. AWS cloud account available with AWS Comprehend, Lambda and all mentioned below services from "Additional Information" are enabled.
 4. AWS account has access to eGain URL from where chat transcripts are fetched.
-5. Role with permissions as  defined in "deployment/sentimentAnalyserrole.json" is created before the deployment and used while deploying the application
+5. Role with permi  ssions as  defined in "deployment/sentimentAnalyserrole.json" is created before the deployment and used while deploying the application
 6. AWS CLI, please refer https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html to install and configure AWS CLI. You need to run the 'aws configure' to configure the aws profile for deployment
 7. SAM CLI, please refer https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-windows.html to install and configure SAM CLI
 
