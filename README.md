@@ -35,7 +35,7 @@ Please check architecture diagram present in "docs\Sentiment Analysis Diagram.pn
 
 **Installation**
 1. Go to your terminal and do git clone https://github.com/snehaldatar/egain-chat-sentiment-analysis.git to clone this repository 
-2. Navigate to deployment folder and edit the egps-chat-sentiment-analysis-config.properties file with appropriate parameters. Proxy details should be used if required to access eGain. Please refer below table
+2. Navigate to deployment folder and edit the egps-chat-sentiment-analysis-config.properties file with appropriate parameter values as specified below. Proxy details should be used if required to access eGain. Attached properties file has example values for refrence.
   
   | Property        | Description |
   | ------------- |:-------------:|
@@ -56,7 +56,7 @@ Please check architecture diagram present in "docs\Sentiment Analysis Diagram.pn
   | SUBNET_IDS | Comma separated subnet ids |
   
 3. On command prompt, execute egps-chat-sentiment-analysis-deploy.bat file, it will start deployment and progress can be seen on the command prompt.
-4. Upon successful installation, Cloudwatch event will be created.
+4. Upon successful installation, Cloudwatch event will be created with frequency as specified in the .
 
 **Post Installation**
 1. In the first run job will pick activities from date entered in DATA_START_POINT in config file. The date will be modified for each run to current date and        activities will be picked after the updated date. To modify the start date, navigate to egps-${DeploymentEnvironment}-chat-sentiment-analysis-tidemark table in DynamoDB and update the ACTIVITY_VALUE_FROM value.
@@ -70,7 +70,7 @@ Please check architecture diagram present in "docs\Sentiment Analysis Diagram.pn
 
 
 **Additional Information**
-This Integration leverages the below services from AWS
+This integration leverages the below services from AWS
 1. AWS Lambda - Processed chat transcripts and comprehend call for sentiment analysis
 2. Amazon Cloud Watch  - Triggers lambda at regular interval
 3. Amazon Secrets Manager - Stores required sensitive information 
