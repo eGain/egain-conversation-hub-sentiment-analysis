@@ -1,0 +1,308 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [{
+			"Action": [
+				"secretsmanager:*",
+				"cloudformation:CreateChangeSet",
+				"cloudformation:DescribeChangeSet",
+				"cloudformation:DescribeStackResource",
+				"cloudformation:DescribeStacks",
+				"cloudformation:ExecuteChangeSet",
+				"ec2:DescribeSecurityGroups",
+				"ec2:DescribeSubnets",
+				"ec2:DescribeVpcs",
+				"kms:DescribeKey",
+				"kms:ListAliases",
+				"kms:ListKeys",
+				"lambda:ListFunctions",
+				"rds:DescribeDBClusters",
+				"rds:DescribeDBInstances",
+				"redshift:DescribeClusters",
+				"tag:GetResources"
+			],
+			"Effect": "Allow",
+			"Resource": "*"
+		},
+		{
+			"Action": [
+				"lambda:AddPermission",
+				"lambda:CreateFunction",
+				"lambda:GetFunction",
+				"lambda:InvokeFunction",
+				"lambda:UpdateFunctionConfiguration"
+			],
+			"Effect": "Allow",
+			"Resource": "arn:aws:lambda:*:*:function:SecretsManager*"
+		},
+		{
+			"Action": [
+				"serverlessrepo:CreateCloudFormationChangeSet",
+				"serverlessrepo:GetApplication"
+			],
+			"Effect": "Allow",
+			"Resource": "arn:aws:serverlessrepo:*:*:applications/SecretsManager*"
+		},
+		{
+			"Action": [
+				"s3:GetObject"
+			],
+			"Effect": "Allow",
+			"Resource": [
+				"arn:aws:s3:::awsserverlessrepo-changesets*",
+				"arn:aws:s3:::secrets-manager-rotation-apps-*/*"
+			]
+		},
+		{
+			"Effect": "Allow",
+			"Action": "s3:*",
+			"Resource": "*"
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
+				"execute-api:Invoke",
+				"execute-api:ManageConnections"
+			],
+			"Resource": "arn:aws:execute-api:*:*:*"
+		},
+		{
+			"Action": [
+				"autoscaling:Describe*",
+				"cloudwatch:*",
+				"logs:*",
+				"sns:*",
+				"iam:GetPolicy",
+				"iam:GetPolicyVersion",
+				"iam:GetRole"
+			],
+			"Effect": "Allow",
+			"Resource": "*"
+		},
+		{
+			"Effect": "Allow",
+			"Action": "iam:CreateServiceLinkedRole",
+			"Resource": "arn:aws:iam::*:role/aws-service-role/events.amazonaws.com/AWSServiceRoleForCloudWatchEvents*",
+			"Condition": {
+				"StringLike": {
+					"iam:AWSServiceName": "events.amazonaws.com"
+				}
+			}
+		},
+		{
+			"Action": [
+				"dynamodb:*",
+				"dax:*",
+				"application-autoscaling:DeleteScalingPolicy",
+				"application-autoscaling:DeregisterScalableTarget",
+				"application-autoscaling:DescribeScalableTargets",
+				"application-autoscaling:DescribeScalingActivities",
+				"application-autoscaling:DescribeScalingPolicies",
+				"application-autoscaling:PutScalingPolicy",
+				"application-autoscaling:RegisterScalableTarget",
+				"cloudwatch:DeleteAlarms",
+				"cloudwatch:DescribeAlarmHistory",
+				"cloudwatch:DescribeAlarms",
+				"cloudwatch:DescribeAlarmsForMetric",
+				"cloudwatch:GetMetricStatistics",
+				"cloudwatch:ListMetrics",
+				"cloudwatch:PutMetricAlarm",
+				"cloudwatch:GetMetricData",
+				"datapipeline:ActivatePipeline",
+				"datapipeline:CreatePipeline",
+				"datapipeline:DeletePipeline",
+				"datapipeline:DescribeObjects",
+				"datapipeline:DescribePipelines",
+				"datapipeline:GetPipelineDefinition",
+				"datapipeline:ListPipelines",
+				"datapipeline:PutPipelineDefinition",
+				"datapipeline:QueryObjects",
+				"ec2:DescribeVpcs",
+				"ec2:DescribeSubnets",
+				"ec2:DescribeSecurityGroups",
+				"iam:GetRole",
+				"iam:ListRoles",
+				"kms:DescribeKey",
+				"kms:ListAliases",
+				"sns:CreateTopic",
+				"sns:DeleteTopic",
+				"sns:ListSubscriptions",
+				"sns:ListSubscriptionsByTopic",
+				"sns:ListTopics",
+				"sns:Subscribe",
+				"sns:Unsubscribe",
+				"sns:SetTopicAttributes",
+				"lambda:CreateFunction",
+				"lambda:ListFunctions",
+				"lambda:ListEventSourceMappings",
+				"lambda:CreateEventSourceMapping",
+				"lambda:DeleteEventSourceMapping",
+				"lambda:GetFunctionConfiguration",
+				"lambda:DeleteFunction",
+				"resource-groups:ListGroups",
+				"resource-groups:ListGroupResources",
+				"resource-groups:GetGroup",
+				"resource-groups:GetGroupQuery",
+				"resource-groups:DeleteGroup",
+				"resource-groups:CreateGroup",
+				"tag:GetResources",
+				"kinesis:ListStreams",
+				"kinesis:DescribeStream",
+				"kinesis:DescribeStreamSummary"
+			],
+			"Effect": "Allow",
+			"Resource": "*"
+		},
+		{
+			"Action": "cloudwatch:GetInsightRuleReport",
+			"Effect": "Allow",
+			"Resource": "arn:aws:cloudwatch:*:*:insight-rule/DynamoDBContributorInsights*"
+		},
+		{
+			"Action": [
+				"iam:PassRole"
+			],
+			"Effect": "Allow",
+			"Resource": "*",
+			"Condition": {
+				"StringLike": {
+					"iam:PassedToService": [
+						"application-autoscaling.amazonaws.com",
+						"application-autoscaling.amazonaws.com.cn",
+						"dax.amazonaws.com"
+					]
+				}
+			}
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
+				"iam:CreateServiceLinkedRole"
+			],
+			"Resource": "*",
+			"Condition": {
+				"StringEquals": {
+					"iam:AWSServiceName": [
+						"replication.dynamodb.amazonaws.com",
+						"dax.amazonaws.com",
+						"dynamodb.application-autoscaling.amazonaws.com",
+						"contributorinsights.dynamodb.amazonaws.com",
+						"kinesisreplication.dynamodb.amazonaws.com"
+					]
+				}
+			}
+		},
+		{
+			"Action": [
+				"comprehend:*",
+				"s3:ListAllMyBuckets",
+				"s3:ListBucket",
+				"s3:GetBucketLocation",
+				"iam:ListRoles",
+				"iam:GetRole"
+			],
+			"Effect": "Allow",
+			"Resource": "*"
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
+				"cloudwatch:PutMetricData",
+				"ds:CreateComputer",
+				"ds:DescribeDirectories",
+				"ec2:DescribeInstanceStatus",
+				"logs:*",
+				"ssm:*",
+				"ec2messages:*"
+			],
+			"Resource": "*"
+		},
+		{
+			"Effect": "Allow",
+			"Action": "iam:CreateServiceLinkedRole",
+			"Resource": "arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM*",
+			"Condition": {
+				"StringLike": {
+					"iam:AWSServiceName": "ssm.amazonaws.com"
+				}
+			}
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
+				"iam:DeleteServiceLinkedRole",
+				"iam:GetServiceLinkedRoleDeletionStatus"
+			],
+			"Resource": "arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM*"
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
+				"ssmmessages:CreateControlChannel",
+				"ssmmessages:CreateDataChannel",
+				"ssmmessages:OpenControlChannel",
+				"ssmmessages:OpenDataChannel"
+			],
+			"Resource": "*"
+		},
+		{
+			"Sid": "VisualEditor0",
+			"Effect": "Allow",
+			"Action": [
+				"ec2:CreateNetworkInterface",
+				"ec2:DetachNetworkInterface",
+				"ec2:DescribeNetworkInterfaces",
+				"ec2:DeleteNetworkInterface"
+			],
+			"Resource": "*",
+			"Condition": {
+				"StringEquals": {
+					"aws:RequestedRegion": [
+						"eu-west-1",
+						"us-west-2"
+					]
+				}
+			}
+		},
+		{
+			"Sid": "VisualEditor1",
+			"Effect": "Allow",
+			"Action": [
+				"ec2:DeleteVpcEndpoints",
+				"ec2:CreateVpcEndpoint",
+				"ec2:DescribeVpcEndpoints",
+				"ec2:ModifyVpcEndpoint"
+			],
+			"Resource": "*"
+		},
+		{
+			"Sid": "VisualEditor2",
+			"Effect": "Allow",
+			"Action": [
+				"ec2:CreateNetworkInterface",
+				"ec2:DetachNetworkInterface",
+				"ec2:DescribeNetworkInterfaces",
+				"ec2:DeleteNetworkInterface"
+			],
+			"Resource": "*",
+			"Condition": {
+				"StringEquals": {
+					"aws:RequestedRegion": [
+						"eu-west-1",
+						"us-west-2"
+					]
+				}
+			}
+		},
+		{
+			"Sid": "VisualEditor3",
+			"Effect": "Allow",
+			"Action": [
+				"ec2:DeleteVpcEndpoints",
+				"ec2:CreateVpcEndpoint",
+				"ec2:DescribeVpcEndpoints",
+				"ec2:ModifyVpcEndpoint"
+			],
+			"Resource": "*"
+		}
+	]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "chat-sentiment-analysis",
+  "version": "1.0.0",
+  "description": "Lambda function to identify customer sentiment based on chats",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "egain\\anil kumar,atharva vadapurkar",
+  "license": "UNLICENSED"
+}
