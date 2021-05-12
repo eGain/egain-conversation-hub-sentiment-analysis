@@ -1,8 +1,8 @@
-<sub>**Integrate eGain messaging hub with AWS Comprehend**</sub>
+# Integrate eGain messaging hub with AWS Comprehend
 
 Traditionally most organizations were leveraging survey as a primary tool to measure the customer satisfaction. With the improvement in AI technologies in last few years, getting insights on how your customers are talking to you will paint a better picture. Conversations transcripts are one of the source for measuring the customer satisfaction. This repository contains an example application to determine the sentiments of a conversation in eGain messaging hub. Using sentiment analysis, this information can help paint a more accurate picture of the health of customer relationships with your service agents. This example enables developers to pull the eGain conversation data and sent to AWS comprehend. Developers can use other conversational analytics tool such as Callminer, Clarabridge , Microsoft text analytics as well. You can also use this pattern for getting more insights such as product information from the conversation. 
 
-**Flow**
+# Flow
 
 Please check architecture diagram at "docs\Sentiment Analysis Diagram.png"
 
@@ -25,11 +25,11 @@ Please check architecture diagram at "docs\Sentiment Analysis Diagram.png"
 2. In this sample, only chats in English will be processed .
 3. The generated HTML will be stored in ${S3_bucket}/chat/sentiment-analysis/output
 
-**Getting Started**
+# Getting Started
 1. Configure eGain
     1.1. Use eGain URL where eGain chat product is configured and create eGain User with Platform license and Advisor role.
 
-**Pre-requsiites**
+# Pre-requsiites
 1. Git installed on your system. It can be downloaded from https://git-scm.com/downloads
 2. eGain Cloud availability with valid advisor credentials
 3. AWS cloud account available with AWS Comprehend, Lambda and all mentioned below services from "Additional Information" are enabled.
@@ -38,7 +38,7 @@ Please check architecture diagram at "docs\Sentiment Analysis Diagram.png"
 6. AWS CLI, please refer https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html to install and configure AWS CLI. You need to run the 'aws configure' to configure the aws profile for deployment
 7. SAM CLI, please refer https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-windows.html to install and configure SAM CLI
 
-**Installation**
+# Installation
 1. Go to your terminal and do git clone https://github.com/snehaldatar/egain-chat-sentiment-analysis.git to clone this repository 
 2. Navigate to deployment folder and edit the egps-chat-sentiment-analysis-config.properties file with appropriate parameter values as specified below. Proxy details should be used if required to access eGain. Attached properties file has example values for refrence.
   
@@ -64,7 +64,7 @@ Please check architecture diagram at "docs\Sentiment Analysis Diagram.png"
 3. On command prompt, execute egps-chat-sentiment-analysis-deploy.bat file, it will start deployment and progress can be seen on the command prompt.
 4. Upon successful installation, Cloudwatch event will be created with frequency as specified in the properties file.
 
-**Post Installation**
+# Post Installation
 1. In the first run job will pick activities from date entered in DATA_START_POINT in config file. The date will be modified for each run to current date and        activities will be picked after the updated date. To modify the start date, navigate to egps-${DeploymentEnvironment}-chat-sentiment-analysis-tidemark table in DynamoDB and update the ACTIVITY_VALUE_FROM value.
 2. To modify eGain host URL or proxy details, navigate to Parameter Store in AWS Systems Manager and edit below properties:
   * /egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/egain-api-host
@@ -75,7 +75,7 @@ Please check architecture diagram at "docs\Sentiment Analysis Diagram.png"
 
 
 
-**Additional Information**
+# Additional Information
 
 This integration leverages the below services from AWS
 1. AWS Lambda - Processed chat transcripts and comprehend call for sentiment analysis
