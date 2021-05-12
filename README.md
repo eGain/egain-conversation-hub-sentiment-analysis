@@ -4,14 +4,14 @@ Traditionally most organizations were leveraging survey as a primary tool to mea
 
 # Flow
 
-Please check architecture diagram at "docs\Sentiment Analysis Diagram.png"
+Please check architecture diagram from "docs\Sentiment Analysis Diagram.png"
 
 **Overview**
 
 1. Cloudwatch event rule is configured to execute the lambda every x hours
 2. eGain chat transcripts of closed chats are fetched at regular interval using eGain messaging hub provided interaction APIs.
-3. 3.1 Tidemark maintained to define start and end date of batch
-4. 3.2. Chat transcripts are processed to separate agent and customer messages
+3. Tidemark maintained to define start and end date of batch ( 3.1 from Architecture diagram)
+4. Chat transcripts are processed to separate agent and customer messages ( 3.2 from Architecture diagram)
 5. Customer messages from chat transcripts are forwarded to AWS comprehend sentiment analyzer service
 6. Sentiment details of the messages are returned from the AWS Comprehend service
 7. Tidemark and batch status is updated
