@@ -29,7 +29,7 @@ Please check architecture diagram from "docs\Sentiment Analysis Diagram.png"
 1. Configure eGain
     1.1. Use eGain URL where eGain chat product is configured and create eGain User with Platform license and Advisor role.
 
-# Pre-requsiites
+# Prerequsiites
 1. Git installed on your system. It can be downloaded from https://git-scm.com/downloads
 2. eGain Cloud availability with valid advisor credentials
 3. AWS cloud account available with AWS Comprehend, Lambda and all mentioned below services from "Additional Information" are enabled.
