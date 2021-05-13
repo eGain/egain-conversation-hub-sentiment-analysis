@@ -84,8 +84,8 @@ This package will deploy following components
 2. 2 Layers: egps-${DeploymentEnvironment}-chat-sentiment-analysis-dependencies and egps-${DeploymentEnvironment}-chat-sentiment-analysis-common
 3. 2 CloudWatch Events: egps-${DeploymentEnvironment}-chat-sentiment-analysis-schedule and egps-${DeploymentEnvironment}-chat-sentiment-analysis-bowwave-schedule
 4. 2 DynamoDB tables: egps-${DeploymentEnvironment}-chat-sentiment-analysis-tidemark and egps-${DeploymentEnvironment}-chat-sentiment-analysis-batch
-5. Secret manager for eGain and proxy credentials
-6. Parameter store for other configurations
+5. Secret manager entries for eGain and proxy credentials
+6. Parameter store entried for other configurations
 
 # Additional Information
 
