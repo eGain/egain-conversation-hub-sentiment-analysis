@@ -67,13 +67,25 @@ Please check architecture diagram from "docs\Sentiment Analysis Diagram.png"
 # Post Installation
 1. In the first run job will pick activities from date entered in DATA_START_POINT in config file. The date will be modified for each run to current date and        activities will be picked after the updated date. To modify the start date, navigate to egps-${DeploymentEnvironment}-chat-sentiment-analysis-tidemark table in DynamoDB and update the ACTIVITY_VALUE_FROM value.
 2. To modify eGain host URL or proxy details, navigate to Parameter Store in AWS Systems Manager and edit below properties:
-  * /egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/egain-api-host
-  * /egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/egain-api-proxy-ip
-  * /egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/egain-api-proxy-port
+    * /egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/egain-api-host
+    * /egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/egain-api-proxy-ip
+    * /egps/connected-apps/${DeploymentEnvironment}/chat-sentiment-analysis/egain-api-proxy-port
 3. To modify eGain login credentials, navigate to AWS Secrets manager and edit below properties:
-  * egps-${DeploymentEnvironment}-chat-sentiment-analysis-secrets => egain-api-user-credential
+    * egps-${DeploymentEnvironment}-chat-sentiment-analysis-secrets => egain-api-user-credential
 
+# Verification
+As a part of post deployment verification we can ensure working end to end functionality and check if all resources are deployed properly. For functionality testing refer below steps: 
 
+1. Navigate to CloudWatch in AWS console and check if event is enabled.
+2. At the scheduled time, check if event is executed by referring to CloudWatch logs or visiting the S3 location (mentioned in Notes) to check if ouptut HTML is generated.
+
+This package will deploy following components 
+1. 1 Lambda: egps-${DeploymentEnvironment}-chat-sentiment-analysis
+2. 2 Layers: egps-${DeploymentEnvironment}-chat-sentiment-analysis-dependencies and egps-${DeploymentEnvironment}-chat-sentiment-analysis-common
+3. 2 CloudWatch Events: egps-${DeploymentEnvironment}-chat-sentiment-analysis-schedule and egps-${DeploymentEnvironment}-chat-sentiment-analysis-bowwave-schedule
+4. 2 DynamoDB tables: egps-${DeploymentEnvironment}-chat-sentiment-analysis-tidemark and egps-${DeploymentEnvironment}-chat-sentiment-analysis-batch
+5. Secret manager for eGain and proxy credentials
+6. Parameter store for other configurations
 
 # Additional Information
 
