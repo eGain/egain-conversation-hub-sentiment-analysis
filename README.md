@@ -6,7 +6,7 @@ Traditionally most organizations were leveraging survey as a primary tool to mea
 
 Please check architecture diagram from "docs\Sentiment Analysis Diagram.png"
 
-**Overview**
+## Overview
 
 1. Cloudwatch event rule is configured to execute the lambda every x hours
 2. eGain chat transcripts of closed chats are fetched at regular interval using eGain messaging hub provided interaction APIs.
@@ -17,10 +17,10 @@ Please check architecture diagram from "docs\Sentiment Analysis Diagram.png"
 7. Tidemark and batch status is updated
 8. Sentiments analysis data per customer for that batch is stored in HTML Pie Chat format to S3 bucket.
 
-**Sample Output**
+## Sample Output
 ![Sample Output](.github/images/sampleCustomerOutput.PNG)
 
-**Note**
+## Note
 1. Chats with anonymous customers will not be processed.
 2. In this sample, only chats in English will be processed .
 3. The generated HTML will be stored in ${S3_bucket}/chat/sentiment-analysis/output
