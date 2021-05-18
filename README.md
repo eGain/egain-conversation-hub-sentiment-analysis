@@ -2,11 +2,7 @@
 
 Traditionally most organizations were leveraging survey as a primary tool to measure the customer satisfaction. With the improvement in AI technologies in last few years, getting insights on how your customers are talking to you will paint a better picture. Conversations transcripts are one of the source for measuring the customer satisfaction. This repository contains an example application to determine the sentiments of a conversation in eGain messaging hub. Using sentiment analysis, this information can help paint a more accurate picture of the health of customer relationships with your service agents. This example enables developers to pull the eGain conversation data and sent to AWS comprehend. Developers can use other conversational analytics tool such as Callminer, Clarabridge , Microsoft text analytics as well. You can also use this pattern for getting more insights such as product information from the conversation. 
 
-# Flow
-
-Please check architecture diagram from "docs\Sentiment Analysis Diagram.png"
-
-## Overview
+# Architecture Overview
 
 1. Cloudwatch event rule is configured to execute the lambda every x hours
 2. eGain chat transcripts of closed chats are fetched at regular interval using eGain messaging hub provided interaction APIs.
@@ -16,6 +12,8 @@ Please check architecture diagram from "docs\Sentiment Analysis Diagram.png"
 6. Sentiment details of the messages are returned from the AWS Comprehend service
 7. Tidemark and batch status is updated
 8. Sentiments analysis data per customer for that batch is stored in HTML Pie Chat format to S3 bucket.
+
+Architecture diagram location: "docs\Sentiment Analysis Diagram.png"
 
 ## Sample Output
 ![Sample Output](.github/images/sampleCustomerOutput.PNG)
@@ -34,12 +32,12 @@ Please check architecture diagram from "docs\Sentiment Analysis Diagram.png"
 2. eGain Cloud availability with valid advisor credentials
 3. AWS cloud account available with AWS Comprehend, Lambda and all mentioned below services from "Additional Information" are enabled.
 4. AWS account has access to eGain URL from where chat transcripts are fetched.
-5. Role with permi  ssions as  defined in "deployment/sentimentAnalyserrole.json" is created before the deployment and used while deploying the application
+5. Role with permissions as  defined in "deployment/sentimentAnalyserrole.json" is created before the deployment and used while deploying the application
 6. AWS CLI, please refer https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html to install and configure AWS CLI. You need to run the 'aws configure' to configure the aws profile for deployment
 7. SAM CLI, please refer https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-windows.html to install and configure SAM CLI
 
 # Installation
-1. Go to your terminal and do git clone https://github.com/snehaldatar/egain-chat-sentiment-analysis.git to clone this repository 
+1. Go to your terminal and execute command "git clone https://github.com/snehaldatar/egain-chat-sentiment-analysis.git" to clone this repository 
 2. Navigate to deployment folder and edit the egps-chat-sentiment-analysis-config.properties file with appropriate parameter values as specified below. Proxy details should be used if required to access eGain. Attached properties file has example values for refrence.
   
   | Property        | Description |
