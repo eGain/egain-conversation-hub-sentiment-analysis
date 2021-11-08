@@ -37,7 +37,7 @@ Architecture diagram location: "docs\Sentiment Analysis Diagram.png"
 7. SAM CLI, please refer https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-windows.html to install and configure SAM CLI
 
 # Installation
-1. Go to your terminal and execute command "git clone https://github.com/snehaldatar/egain-chat-sentiment-analysis.git" to clone this repository 
+1. Go to your terminal and execute command "git clone https://github.com/eGain/egain-conversation-hub-sentiment-analysis.git" to clone this repository 
 2. Navigate to deployment folder and edit the egps-chat-sentiment-analysis-config.properties file with appropriate parameter values as specified below. Proxy details should be used if required to access eGain. Attached properties file has example values for refrence.
   
   | Property        | Description |
